@@ -224,34 +224,6 @@ YUI.add('ez-image-editview', function (Y) {
         },
 
         /**
-         * Returns a "human" readable version of the max allowed file size. It
-         * is overidden the max size is in byte in Image fields.
-         *
-         * @method _getHumanMaxSize
-         * @protected
-         * @return {String}
-         */
-        _getHumanMaxSize: function () {
-            return this.get('fieldDefinition').validatorConfiguration.FileSizeValidator.maxFileSize + 'b';
-        },
-
-        /**
-         * Returns the maximum allowed size in bytes or 0 if no limit is set.
-         * The default implementation is overriden because in the case of the
-         * Image field, the field definition directly contains the maximum size
-         * in bytes while for BinaryFile and Media, this size is in megabytes.
-         *
-         * @method _maxSize
-         * @protected
-         * @return Number
-         */
-        _maxSize: function () {
-            var maxSize = this.get('fieldDefinition').validatorConfiguration.FileSizeValidator.maxFileSize;
-
-            return maxSize ? maxSize : 0;
-        },
-
-        /**
          * Defines the variables to be imported in the field edit template.
          *
          * @protected
