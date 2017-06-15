@@ -34,6 +34,7 @@ YUI.add('ez-searchview', function (Y) {
                 this._set('limit', this.get('limit') + this.get('loadMoreAddingNumber'));
                 this._fireSearchRequest(this.get('searchString'), this.get('limit'));
             });
+            this.after('errorStatusChange', this._errorUI);
         },
 
         render: function () {
@@ -89,7 +90,13 @@ YUI.add('ez-searchview', function (Y) {
                 searchString = form.one('.ez-search-form-input').get('value');
 
             e.preventDefault();
-            this._set('userSearchString', searchString);
+            if (this._isNotBlank(searchString)) {
+                this.set('errorStatus', false);
+                this._set('userSearchString', searchString);
+            }
+            else {
+                this.set('errorStatus', Y.eZ.trans('search.error.notblank', {}, 'search'));
+            }
         },
 
         /**
@@ -105,8 +112,54 @@ YUI.add('ez-searchview', function (Y) {
                 'minHeight', container.get('winHeight') + 'px'
             );
         },
+
+        /**
+         * Reflects in the UI the errorStatus change
+         *
+         * @method _errorUI
+         * @protected
+         * @param {Object} e the event facade of the errorStatusChange event
+         */
+        _errorUI: function(e) {
+            this._setErrorMessage(e.newVal);
+        },
+
+        /**
+         * Sets the error message in UI
+         *
+         * @method _setErrorMessage
+         * @protected
+         * @param {String} msg the error message
+         */
+        _setErrorMessage: function (msg) {
+            this.get('container').one('.ez-search-error-message').setContent(msg);
+        },
+
+        /**
+         * Check that a user search string isn't blank
+         *
+         * @private
+         * @param {String} searchString The string used to search
+         * @returns {boolean}
+         */
+        _isNotBlank: function(searchString) {
+            return !!searchString.trim();
+        },
     }, {
         ATTRS: {
+            /**
+             * The validation error status. A truthy value means there's an
+             * error. Setting this attribute to a non empty string will add this
+             * string as an error message (under the field name by default)
+             *
+             * @attribute errorStatus
+             * @type mixed
+             * @default false
+             */
+            errorStatus: {
+                value: false
+            },
+
             /**
              * The search string the user wants to search
              *

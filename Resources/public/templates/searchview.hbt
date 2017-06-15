@@ -7,9 +7,10 @@
             <form class="ez-search-form pure-form">
                 <p>
                     <label class="ez-search-form-label" for="searchstring">{{ translate 'search.search.content' 'search' }}</label>
-                    <input class="ez-search-form-input" required type="text" value="{{searchString}}">
+                    <input class="ez-search-form-input" type="text" value="{{searchString}}">
                     <button type="submit" class="ez-search-form-button pure-button ez-button">{{ translate 'search.search' 'search' }}</button>
                 </p>
+                <p class="ez-search-error-message"></p>
             </form>
             <div class="ez-searchlist-content"></div>
         </div>

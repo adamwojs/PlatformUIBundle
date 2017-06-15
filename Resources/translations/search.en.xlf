@@ -30,6 +30,12 @@
         <note>key: search.no.result</note>
         <jms:reference-file>./Resources/public/templates/searchlistview.hbt</jms:reference-file>
       </trans-unit>
+      <trans-unit id="f6bfee5376d015aee8a5f1c392d4d310861f85b0" resname="search.error.notblank">
+        <source>Search query should not be blank.</source>
+        <target>Search query should not be blank.</target>
+        <note>search.error.notblank</note>
+        <jms:reference-file>./Resources/public/templates/searchview.hbt</jms:reference-file>
+      </trans-unit>
       <trans-unit id="bc7325f0409778308bac4fb799fe0a49433b2af5" resname="search.result.list">
         <source>Result list</source>
         <target>Result list</target>
