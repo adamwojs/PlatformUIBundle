@@ -5,12 +5,15 @@ system:
                 reference: reference
                 filters:
                     - {name: geometry/scaleheightdownonly, params: [250]}
+                internal: true
             platformui_editview:
                 reference: reference
                 filters:
                     - {name: geometry/scalewidthdownonly, params: [300]}
+                internal: true
             platformui_profileview:
                 reference: reference
                 filters:
                     - {name: geometry/scaledownonly, params: [30, 30]}
                     - {name: geometry/crop, params: [30, 30, 0, 0]}
+                internal: true

@@ -20,6 +20,7 @@ parameters:
     ezsystems.platformui.application_config.provider.anonymous_user_id.class: EzSystems\PlatformUIBundle\ApplicationConfig\Providers\AnonymousUserId
     ezsystems.platformui.application_config.provider.locales_map.class: EzSystems\PlatformUIBundle\ApplicationConfig\Providers\LocalesMap
     ezsystems.platformui.application_config.aggregator.class: EzSystems\PlatformUIBundle\ApplicationConfig\Aggregator
+    ezsystems.platformui.application_config.provider.image_variations.class: EzSystems\PlatformUIBundle\ApplicationConfig\Providers\ImageVariationsProvider
     ezsystems.platformui.application_config.provider.root_info.class: EzSystems\PlatformUIBundle\ApplicationConfig\Providers\RootInfo
     ezsystems.platformui.application_config.provider.languages.class: EzSystems\PlatformUIBundle\ApplicationConfig\Providers\Languages
     ezsystems.platformui.application_config.provider.interface_languages.class: EzSystems\PlatformUIBundle\ApplicationConfig\Providers\InterfaceLanguages
@@ -96,7 +97,7 @@ services:
             - {name: ezsystems.platformui.application_config_provider, key: 'localesMap'}
 
     ezsystems.platformui.application_config.provider.image_variations:
-        class: "%ezsystems.platformui.application_config.provider.value.class%"
+        class: "%ezsystems.platformui.application_config.provider.image_variations.class%"
         arguments:
             - $image_variations$
         tags:
