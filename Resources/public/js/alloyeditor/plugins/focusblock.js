@@ -20,7 +20,7 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         var block = elementPath.block,
             elements = elementPath.elements;
 
-        if ( !block ) {
+        if (!block) {
             return null;
         }
         return elements[elements.length - 2];
@@ -30,10 +30,10 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         var block = findNewFocusedBlock(e.data.path),
             oldBlock = findFocusedBlock(e.editor);
 
-        if ( oldBlock && (!block || block.$ !== oldBlock.$) ) {
+        if (oldBlock && (!block || block.$ !== oldBlock.$)) {
             oldBlock.removeClass(FOCUSED_CLASS);
         }
-        if ( block ) {
+        if (block) {
             block.addClass(FOCUSED_CLASS);
         }
     }
@@ -41,7 +41,7 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
     function clearFocusedBlock(e) {
         var oldBlock = findFocusedBlock(e.editor);
 
-        if ( oldBlock ) {
+        if (oldBlock) {
             oldBlock.removeClass(FOCUSED_CLASS);
         }
     }
@@ -54,7 +54,7 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         doc.appendChild(root);
         root.innerHTML = e.data.dataValue;
         list = root.querySelectorAll('.' + FOCUSED_CLASS);
-        if ( list.length ) {
+        if (list.length) {
             for (i = 0; i != list.length; ++i) {
                 element = list[i];
 
@@ -63,7 +63,7 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
                 // RichText xhtml5edit parser does not accept empty class
                 // attributes...
                 // @TODO remove once fixed.
-                if ( !element.getAttribute('class') ) {
+                if (!element.getAttribute('class')) {
                     element.removeAttribute('class');
                 }
             }

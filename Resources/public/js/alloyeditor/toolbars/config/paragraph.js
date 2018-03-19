@@ -11,7 +11,7 @@ YUI.add('ez-alloyeditor-toolbar-config-paragraph', function (Y) {
      */
     Y.namespace('eZ.AlloyEditorToolbarConfig');
 
-    var BlockBase = Y.eZ.AlloyEditorToolbarConfig.BlockBase,
+    var BlockBase = Y.eZ.AlloyEditorToolbarConfig.BlockFloatingBase,
         ParagraphConfig,
         name = 'paragraph',
         getStyles = function () {
@@ -69,6 +69,8 @@ YUI.add('ez-alloyeditor-toolbar-config-paragraph', function (Y) {
         this.getArrowBoxClasses = BlockBase.getArrowBoxClasses;
 
         this.setPosition = BlockBase.setPosition;
+        this.onMountFn = BlockBase.onMountFn;
+        this.onUnmountFn = BlockBase.onUnmountFn;
     };
 
     /*
@@ -93,7 +95,7 @@ YUI.add('ez-alloyeditor-toolbar-config-paragraph', function (Y) {
      * @namespace eZ.AlloyEditorToolbarConfig
      * @deprecated
      * @class Paragraph
-     * @extends BlockBase
+     * @extends BlockFloatingBase
      */
     Y.eZ.AlloyEditorToolbarConfig.Paragraph = {
         name: name,
@@ -135,5 +137,7 @@ YUI.add('ez-alloyeditor-toolbar-config-paragraph', function (Y) {
         getArrowBoxClasses: BlockBase.getArrowBoxClasses,
 
         setPosition: BlockBase.setPosition,
+        onMountFn: BlockBase.onMountFn,
+        onUnmountFn: BlockBase.onUnmountFn
     };
 });
