@@ -83,7 +83,7 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         init: function (editor) {
             editor.on('selectionChange', updateFocusedBlock);
             editor.on('blur', clearFocusedBlock);
-            editor.on('getData', clearFocusedBlockFromData);
+            editor.onq  '[/('getData', clearFocusedBlockFromData);
         },
     });
 });

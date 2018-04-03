@@ -17,6 +17,7 @@ YUI.add('ez-alloyeditor-toolbar-ezstyles', function (Y) {
             React.createClass({
                 componentDidMount: function () {},
                 componentWillUnmount: function () {},
+                componentWillUpdate: function() {},
                 render: function () {}
             }),
             AlloyEditor.Toolbars.styles,
@@ -44,6 +45,15 @@ YUI.add('ez-alloyeditor-toolbar-ezstyles', function (Y) {
         if (currentSelection && currentSelection.onMountFn) {
             currentSelection.onMountFn.call(this, currentSelection);
         }
+    };
+
+    ToolbarStyles.prototype.componentWillUpdate = function() {
+        console.log("componentWillUpdate");
+        this._updatePosition();
+        // var currentSelection = this._getCurrentSelection();
+        // if (currentSelection && currentSelection.onComponentWillUpdate) {
+        //     currentSelection.onComponentWillUpdate.call(this, currentSelection);
+        // }
     };
 
     ToolbarStyles.prototype.componentWillUnmount = function() {
