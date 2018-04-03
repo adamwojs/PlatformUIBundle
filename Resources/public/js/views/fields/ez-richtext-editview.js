@@ -166,7 +166,6 @@ YUI.add('ez-richtext-editview', function (Y) {
 
             this._registerExternalCKEditorPlugin('widget', 'widget/');
             this._registerExternalCKEditorPlugin('lineutils', 'lineutils/');
-            console.log('_initEditor!');
             editor = AlloyEditor.editable(
                 this.get('container').one('.ez-richtext-editor').getDOMNode(), {
                     toolbars: this.get('toolbarsConfig'),
@@ -176,7 +175,7 @@ YUI.add('ez-richtext-editview', function (Y) {
                         editableRegion: '.' + EDITABLE_CLASS,
                         imageVariations: this._getImageVariations(),
                     },
-                    uiNode: this.get('container').getDOMNode().parentNode.parentNode.parentNode.parentNode.parentNode.parentNode
+                    uiNode: this.get('container').ancestor('.ez-main-content')
                 }
             );
             nativeEd = editor.get('nativeEditor');

@@ -15,16 +15,27 @@ YUI.add('ez-alloyeditor-toolbar-config-block-floating-base', function (Y) {
 
     var ReactDOM = Y.eZ.AlloyEditor.ReactDOM;
 
-    function isToolbarFixed (editor, toolbar) {
+    function getScrollParent (editor) {
         var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
-        var scrollParent = window;
         if (cof && cof.contains(editor)) {
-            scrollParent = cof.querySelector('.ez-main-content');
-            //return false;
+            return cof.querySelector('.ez-main-content');
         }
 
-        return scrollParent.scrollTop >= (editor.offsetTop - toolbar.offsetHeight) &&
-               scrollParent.scrollTop <= (editor.offsetTop + editor.offsetHeight + toolbar.offsetHeight);
+        return window;
+    }
+
+    function isToolbarFixed (editor, toolbar) {
+        var scrollY;
+
+        var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
+        if (cof && cof.contains(editor)) {
+            scrollY = cof.querySelector('.ez-main-content').scrollTop;
+        } else {
+            scrollY = window.scrollY;
+        }
+
+        return scrollY >= (editor.offsetTop - toolbar.offsetHeight) &&
+               scrollY <= (editor.offsetTop + editor.offsetHeight + toolbar.offsetHeight);
     }
 
     function setPositionFor (block, editor) {
@@ -82,32 +93,5 @@ YUI.add('ez-alloyeditor-toolbar-config-block-floating-base', function (Y) {
             }
             return setPositionFor.call(this, block, editor);
         },
-
-        onMountFn: function () {
-            console.log('onMountFn');
-            this.handleScrollId = Y.eZ.AlloyEditorToolbarConfig.BlockFloatingBase.onScroll.bind(this);
-
-            window.addEventListener('scroll', this.handleScrollId);
-        },
-
-        onUnmountFn: function () {
-            console.log('onUnmountFn');
-            window.removeEventListener('scroll', this.handleScrollId);
-        },
-
-        onScroll: function (e) {
-            var editor = this.props.editor._editor.element.$,
-                toolbar = ReactDOM.findDOMNode(this);
-
-            if (!toolbar) {
-                return ;
-            }
-
-            if (isToolbarFixed(editor, toolbar)) {
-                toolbar.classList.add('ae-toolbar-styles-fixed');
-            } else {
-                toolbar.classList.remove('ae-toolbar-styles-fixed');
-            }
-        }
     };
 });

@@ -15,8 +15,6 @@ YUI.add('ez-alloyeditor-toolbar-ezstyles', function (Y) {
         React = Y.eZ.React,
         ToolbarStyles = Y.extend(
             React.createClass({
-                componentDidMount: function () {},
-                componentWillUnmount: function () {},
                 render: function () {}
             }),
             AlloyEditor.Toolbars.styles,
@@ -36,23 +34,6 @@ YUI.add('ez-alloyeditor-toolbar-ezstyles', function (Y) {
      * @extends AlloyEditor.Toolbars.styles
      */
     ToolbarStyles.key = 'ezstyles';
-
-    ToolbarStyles.prototype.componentDidMount = function() {
-        console.log('componentDidMount');
-        this._updatePosition();
-        var currentSelection = this._getCurrentSelection();
-        if (currentSelection && currentSelection.onMountFn) {
-            currentSelection.onMountFn.call(this, currentSelection);
-        }
-    };
-
-    ToolbarStyles.prototype.componentWillUnmount = function() {
-        console.log('componentWillUnmount');
-        var currentSelection = this._getCurrentSelection();
-        if (currentSelection && currentSelection.onUnmountFn) {
-            currentSelection.onUnmountFn.call(this, currentSelection);
-        }
-    };
 
     ToolbarStyles.prototype.render = AlloyEditor.Toolbars.styles.prototype.render;
 

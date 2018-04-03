@@ -12,6 +12,38 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         return;
     }
 
+    function getScrollParent (editor) {
+        var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
+        if (cof && cof.contains(editor)) {
+            return cof.querySelector('.ez-main-content');
+        }
+
+        return window;
+    }
+    
+    function getScrollY(editor) {
+        var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
+        if (cof && cof.contains(editor)) {
+            return cof.querySelector('.ez-main-content').scrollTop;
+        }
+
+        return window.scrollY;
+    }
+
+    function isToolbarFixed (editor, toolbar) {
+        var scrollY;
+
+        var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
+        if (cof && cof.contains(editor)) {
+            scrollY = cof.querySelector('.ez-main-content').scrollTop;
+        } else {
+            scrollY = window.scrollY;
+        }
+
+        return scrollY >= (editor.offsetTop - toolbar.offsetHeight) &&
+               scrollY <= (editor.offsetTop + editor.offsetHeight + toolbar.offsetHeight);
+    }
+
     function findFocusedBlock(editor) {
         return editor.element.findOne('.' + FOCUSED_CLASS);
     }
@@ -71,6 +103,34 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         }
     }
 
+    var scrollHandler = function () {
+        var toolbar = document.querySelector('.ae-toolbar-floating');
+        if (!toolbar) {
+             return ;
+        }
+
+        var editor = false;
+        for (var editor_name in CKEDITOR.instances) {
+            if (CKEDITOR.instances[editor_name].focusManager.hasFocus) {
+                editor = CKEDITOR.instances[editor_name];
+            }
+        }
+
+        if (!editor) {
+            return ;
+        }
+
+        var editorElement = editor.element.$;
+        var scrollY = getScrollY(editorElement);
+        if (scrollY >= (editorElement.offsetTop - toolbar.offsetHeight) &&
+            scrollY <= (editorElement.offsetTop + editorElement.offsetHeight + toolbar.offsetHeight))
+        {
+            toolbar.classList.add('ae-toolbar-styles-fixed');
+        } else {
+            toolbar.classList.remove('ae-toolbar-styles-fixed');
+        }
+    };
+
     /**
      * CKEditor plugin to add/remove the focused class on the block holding the
      * caret.
@@ -84,6 +144,9 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
             editor.on('selectionChange', updateFocusedBlock);
             editor.on('blur', clearFocusedBlock);
             editor.on('getData', clearFocusedBlockFromData);
+
+            var scrollParent = getScrollParent(editor.element.$);
+            scrollParent.addEventListener('scroll', scrollHandler);
         },
     });
 });
