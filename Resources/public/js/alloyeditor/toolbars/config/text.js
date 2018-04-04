@@ -22,6 +22,9 @@ YUI.add('ez-alloyeditor-toolbar-config-text', function (Y) {
     Y.eZ.AlloyEditorToolbarConfig.Text = {
         name: 'text',
         buttons: ['bold', 'italic', 'underline', 'subscript', 'superscript', 'quote', 'strike', 'link'],
-        test: AlloyEditor.SelectionTest.text
+        test: AlloyEditor.SelectionTest.text,
+        setPosition: function() {
+            console.log("Set position");
+        }
     };
 });

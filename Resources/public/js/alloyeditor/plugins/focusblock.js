@@ -12,6 +12,38 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         return;
     }
 
+    function getScrollParent (editor) {
+        var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
+        if (cof && cof.contains(editor)) {
+            return cof.querySelector('.ez-main-content');
+        }
+
+        return window;
+    }
+    
+    function getScrollY(editor) {
+        var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
+        if (cof && cof.contains(editor)) {
+            return cof.querySelector('.ez-main-content').scrollTop;
+        }
+
+        return window.scrollY;
+    }
+
+    function isToolbarFixed (editor, toolbar) {
+        var scrollY;
+
+        var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
+        if (cof && cof.contains(editor)) {
+            scrollY = cof.querySelector('.ez-main-content').scrollTop;
+        } else {
+            scrollY = window.scrollY;
+        }
+
+        return scrollY >= (editor.offsetTop - toolbar.offsetHeight) &&
+               scrollY <= (editor.offsetTop + editor.offsetHeight + toolbar.offsetHeight);
+    }
+
     function findFocusedBlock(editor) {
         return editor.element.findOne('.' + FOCUSED_CLASS);
     }
@@ -20,7 +52,7 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         var block = elementPath.block,
             elements = elementPath.elements;
 
-        if ( !block ) {
+        if (!block) {
             return null;
         }
         return elements[elements.length - 2];
@@ -30,10 +62,10 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         var block = findNewFocusedBlock(e.data.path),
             oldBlock = findFocusedBlock(e.editor);
 
-        if ( oldBlock && (!block || block.$ !== oldBlock.$) ) {
+        if (oldBlock && (!block || block.$ !== oldBlock.$)) {
             oldBlock.removeClass(FOCUSED_CLASS);
         }
-        if ( block ) {
+        if (block) {
             block.addClass(FOCUSED_CLASS);
         }
     }
@@ -41,7 +73,7 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
     function clearFocusedBlock(e) {
         var oldBlock = findFocusedBlock(e.editor);
 
-        if ( oldBlock ) {
+        if (oldBlock) {
             oldBlock.removeClass(FOCUSED_CLASS);
         }
     }
@@ -54,7 +86,7 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         doc.appendChild(root);
         root.innerHTML = e.data.dataValue;
         list = root.querySelectorAll('.' + FOCUSED_CLASS);
-        if ( list.length ) {
+        if (list.length) {
             for (i = 0; i != list.length; ++i) {
                 element = list[i];
 
@@ -63,13 +95,41 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
                 // RichText xhtml5edit parser does not accept empty class
                 // attributes...
                 // @TODO remove once fixed.
-                if ( !element.getAttribute('class') ) {
+                if (!element.getAttribute('class')) {
                     element.removeAttribute('class');
                 }
             }
             e.data.dataValue = root.innerHTML;
         }
     }
+
+    var scrollHandler = function () {
+        var toolbar = document.querySelector('.ae-toolbar-floating');
+        if (!toolbar) {
+             return ;
+        }
+
+        var editor = false;
+        for (var editor_name in CKEDITOR.instances) {
+            if (CKEDITOR.instances[editor_name].focusManager.hasFocus) {
+                editor = CKEDITOR.instances[editor_name];
+            }
+        }
+
+        if (!editor) {
+            return ;
+        }
+
+        var editorElement = editor.element.$;
+        var scrollY = getScrollY(editorElement);
+        if (scrollY >= (editorElement.offsetTop - toolbar.offsetHeight) &&
+            scrollY <= (editorElement.offsetTop + editorElement.offsetHeight + toolbar.offsetHeight))
+        {
+            toolbar.classList.add('ae-toolbar-styles-fixed');
+        } else {
+            toolbar.classList.remove('ae-toolbar-styles-fixed');
+        }
+    };
 
     /**
      * CKEditor plugin to add/remove the focused class on the block holding the
@@ -84,6 +144,9 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
             editor.on('selectionChange', updateFocusedBlock);
             editor.on('blur', clearFocusedBlock);
             editor.on('getData', clearFocusedBlockFromData);
+
+            var scrollParent = getScrollParent(editor.element.$);
+            scrollParent.addEventListener('scroll', scrollHandler);
         },
     });
 });

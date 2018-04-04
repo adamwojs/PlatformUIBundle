@@ -175,6 +175,7 @@ YUI.add('ez-richtext-editview', function (Y) {
                         editableRegion: '.' + EDITABLE_CLASS,
                         imageVariations: this._getImageVariations(),
                     },
+                    uiNode: this.get('container').ancestor('.ez-main-content')
                 }
             );
             nativeEd = editor.get('nativeEditor');

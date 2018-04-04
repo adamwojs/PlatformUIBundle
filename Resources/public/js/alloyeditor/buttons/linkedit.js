@@ -312,8 +312,7 @@ YUI.add('ez-alloyeditor-button-linkedit', function (Y) {
             var editor = this.props.editor.get('nativeEditor'),
                 linkUtils = new CKEDITOR.Link(editor),
                 selection = editor.getSelection(),
-                bookmarks = selection.createBookmarks(),
-                scrollY;
+                bookmarks = selection.createBookmarks();
 
             linkUtils.remove(this.state.element, {advance: true});
 
@@ -321,14 +320,7 @@ YUI.add('ez-alloyeditor-button-linkedit', function (Y) {
 
             this.props.cancelExclusive();
 
-            if (navigator.userAgent.indexOf('Chrome') > -1) {
-                // Workaround for https://jira.ez.no/browse/EZP-28565
-                scrollY = window.pageYOffset;
-                editor.fire('actionPerformed', this);
-                window.scroll(window.pageXOffset, scrollY);
-            } else {
-                editor.fire('actionPerformed', this);
-            }
+            editor.fire('actionPerformed', this);
         },
 
         /**
@@ -361,21 +353,13 @@ YUI.add('ez-alloyeditor-button-linkedit', function (Y) {
                     title: this.state.linkTitle,
                     "data-ez-temporary-link": this.state.isTemporary ? true : null,
                 },
-                modifySelection = {advance: true},
-                scrollY;
+                modifySelection = {advance: true};
 
             if (this.state.linkHref) {
                 linkAttrs.href = this.state.linkHref;
                 linkUtils.update(linkAttrs, this.state.element, modifySelection);
 
-                if (navigator.userAgent.indexOf('Chrome') > -1) {
-                    // Workaround for https://jira.ez.no/browse/EZP-28565
-                    scrollY = window.pageYOffset;
-                    editor.fire('actionPerformed', this);
-                    window.scroll(window.pageXOffset, scrollY);
-                } else {
-                    editor.fire('actionPerformed', this);
-                }
+                editor.fire('actionPerformed', this);
             }
 
             // We need to cancelExclusive with the bound parameters in case the
