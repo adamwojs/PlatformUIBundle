@@ -13,7 +13,7 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         return;
     }
 
-    function getScrollParent (editor) {
+    function findScrollParent(editor) {
         var container = (new Y.Node(editor)).ancestor('.ez-main-content');
         if (container.getStyle('overflow') === 'auto') {
             return container.getDOMNode();
@@ -22,18 +22,14 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         return window;
     }
 
-    function isToolbarOutOfViewport (editor, toolbar) {
-        var container = (new Y.Node(editor)).ancestor('.ez-main-content'),
-            scrollY;
-
-        if (container.getStyle('overflow') === 'auto') {
-            scrollY = container.getDOMNode().scrollTop;
-        } else {
-            scrollY = window.scrollY;
+    function findFocusedEditor() {
+        for (var name in CKEDITOR.instances) {
+            if (CKEDITOR.instances[name].focusManager.hasFocus) {
+                return CKEDITOR.instances[name];
+            }
         }
 
-        return scrollY >= (editor.offsetTop - toolbar.offsetHeight) &&
-               scrollY <= (editor.offsetTop + editor.offsetHeight + toolbar.offsetHeight);
+        return null;
     }
 
     function findFocusedBlock(editor) {
@@ -101,22 +97,12 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
              return ;
         }
 
-        var editor = false;
-        for (var editor_name in CKEDITOR.instances) {
-            if (CKEDITOR.instances[editor_name].focusManager.hasFocus) {
-                editor = CKEDITOR.instances[editor_name];
-            }
-        }
-
+        var editor = findFocusedEditor();
         if (!editor) {
             return ;
         }
 
-        if (isToolbarOutOfViewport(editor.element.$, toolbar)) {
-            toolbar.classList.add(TOOLBAR_FIXED_CLASS);
-        } else {
-            toolbar.classList.remove(TOOLBAR_FIXED_CLASS);
-        }
+        toolbar.classList.toggle(TOOLBAR_FIXED_CLASS, editor.element.getClientRect().top < 0);
     };
 
     /**
@@ -133,7 +119,7 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
             editor.on('blur', clearFocusedBlock);
             editor.on('getData', clearFocusedBlockFromData);
 
-            getScrollParent(editor.element.$).addEventListener('scroll', scrollHandler);
+            findScrollParent(editor.element.$).addEventListener('scroll', scrollHandler);
         },
     });
 });

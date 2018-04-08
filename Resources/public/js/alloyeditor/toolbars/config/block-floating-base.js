@@ -16,49 +16,18 @@ YUI.add('ez-alloyeditor-toolbar-config-block-floating-base', function (Y) {
     var ReactDOM = window.ReactDOM;
     var TOOLBAR_FIXED_CLASS = 'ae-toolbar-styles-fixed';
 
-    function getScrollY(editor, toolbar) {
-        var container = (new Y.Node(editor)).ancestor('.ez-main-content'),
-            scrollY;
-
-        if (container.getStyle('overflow') === 'auto') {
-            scrollY = container.getDOMNode().scrollTop;
-        } else {
-            scrollY = window.scrollY;
-        }
-
-        return scrollY;
-    }
-
-    function isToolbarOutOfViewport (editor, toolbar) {
-        var container = (new Y.Node(editor)).ancestor('.ez-main-content'),
-            scrollY;
-
-        if (container.getStyle('overflow') === 'auto') {
-            scrollY = container.getDOMNode().scrollTop;
-        } else {
-            scrollY = window.scrollY;
-        }
-
-        return scrollY >= (editor.offsetTop - toolbar.offsetHeight) &&
-               scrollY <= (editor.offsetTop + editor.offsetHeight + toolbar.offsetHeight);
-    }
-
     function setPositionFor (block, editor) {
-        console.log("setPositionFor");
-
         /* jshint validthis: true */
-        var editorNode = editor.element.$,
-            toolbarNode = (new CKEDITOR.dom.element(ReactDOM.findDOMNode(this))).$;
+        var editorRect = editor.element.getClientRect(),
+            toolbar = new CKEDITOR.dom.element(ReactDOM.findDOMNode(this));
 
-        var scrollY = getScrollY(editorNode, toolbarNode);
+        toolbar.setStyle('left', editorRect.left + 'px');
+        toolbar.setStyle('top', (editorRect.top + editor.element.getWindow().getScrollPosition().y - toolbar.getClientRect().height) + 'px');
 
-        toolbarNode.style.left = editorNode.offsetLeft + 'px';
-        toolbarNode.style.top = (editorNode.offsetTop - toolbarNode.offsetHeight - scrollY) + 'px';
-
-        if (isToolbarOutOfViewport(editorNode, toolbarNode)) {
-            toolbarNode.classList.add(TOOLBAR_FIXED_CLASS);
+        if (editorRect.top < 0) {
+            toolbar.addClass(TOOLBAR_FIXED_CLASS);
         } else {
-            toolbarNode.classList.remove(TOOLBAR_FIXED_CLASS);
+            toolbar.removeClass(TOOLBAR_FIXED_CLASS);
         }
 
         return true;
@@ -98,6 +67,7 @@ YUI.add('ez-alloyeditor-toolbar-config-block-floating-base', function (Y) {
             if ( !block ) {
                 block = new CKEDITOR.dom.element(payload.editorEvent.data.nativeEvent.target);
             }
+
             return setPositionFor.call(this, block, editor);
         },
     };
