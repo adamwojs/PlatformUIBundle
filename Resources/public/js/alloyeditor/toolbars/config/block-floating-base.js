@@ -14,22 +14,27 @@ YUI.add('ez-alloyeditor-toolbar-config-block-floating-base', function (Y) {
     Y.namespace('eZ.AlloyEditorToolbarConfig');
 
     var ReactDOM = window.ReactDOM;
+    var TOOLBAR_FIXED_CLASS = 'ae-toolbar-styles-fixed';
 
-    function getScrollParent (editor) {
-        var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
-        if (cof && cof.contains(editor)) {
-            return cof.querySelector('.ez-main-content');
+    function getScrollY(editor, toolbar) {
+        var container = (new Y.Node(editor)).ancestor('.ez-main-content'),
+            scrollY;
+
+        if (container.getStyle('overflow') === 'auto') {
+            scrollY = container.getDOMNode().scrollTop;
+        } else {
+            scrollY = window.scrollY;
         }
 
-        return window;
+        return scrollY;
     }
 
-    function isToolbarFixed (editor, toolbar) {
-        var scrollY;
+    function isToolbarOutOfViewport (editor, toolbar) {
+        var container = (new Y.Node(editor)).ancestor('.ez-main-content'),
+            scrollY;
 
-        var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
-        if (cof && cof.contains(editor)) {
-            scrollY = cof.querySelector('.ez-main-content').scrollTop;
+        if (container.getStyle('overflow') === 'auto') {
+            scrollY = container.getDOMNode().scrollTop;
         } else {
             scrollY = window.scrollY;
         }
@@ -39,19 +44,21 @@ YUI.add('ez-alloyeditor-toolbar-config-block-floating-base', function (Y) {
     }
 
     function setPositionFor (block, editor) {
-        console.log("setPositionFor from block-floating-base");
-        /* jshint validthis: true */
-        var domElement = new CKEDITOR.dom.element(ReactDOM.findDOMNode(this));
-        //domElement.addClass('ae-toolbar-transition');
-        domElement.setStyles({
-            left: editor.element.$.offsetLeft + 'px',
-            top: (editor.element.$.offsetTop - domElement.$.offsetHeight) + 'px'
-        });
+        console.log("setPositionFor");
 
-        if (isToolbarFixed(editor.element.$, domElement.$)) {
-            domElement.$.classList.add('ae-toolbar-styles-fixed');
+        /* jshint validthis: true */
+        var editorNode = editor.element.$,
+            toolbarNode = (new CKEDITOR.dom.element(ReactDOM.findDOMNode(this))).$;
+
+        var scrollY = getScrollY(editorNode, toolbarNode);
+
+        toolbarNode.style.left = editorNode.offsetLeft + 'px';
+        toolbarNode.style.top = (editorNode.offsetTop - toolbarNode.offsetHeight - scrollY) + 'px';
+
+        if (isToolbarOutOfViewport(editorNode, toolbarNode)) {
+            toolbarNode.classList.add(TOOLBAR_FIXED_CLASS);
         } else {
-            domElement.$.classList.remove('ae-toolbar-styles-fixed');
+            toolbarNode.classList.remove(TOOLBAR_FIXED_CLASS);
         }
 
         return true;

@@ -18,12 +18,8 @@ YUI.add('ez-alloyeditor-toolbar-ezadd', function (Y) {
 
     var AlloyEditor = Y.eZ.AlloyEditor,
         React = Y.eZ.React,
-        ReactDOM = Y.eZ.ReactDOM,
         ToolbarAdd = Y.extend(
             React.createClass({
-                componentDidMount: function() {},
-                componentDidUpdate: function() {},
-                doUpdatePosition: function() {},
                 render: function () {}
             }), AlloyEditor.Toolbars.add,
             {}, AlloyEditor.Toolbars.add
@@ -42,20 +38,6 @@ YUI.add('ez-alloyeditor-toolbar-ezadd', function (Y) {
      */
 
     ToolbarAdd.key = 'ezadd';
-
-    ToolbarAdd.prototype.componentDidMount = function () {
-        this.doUpdatePosition();
-    };
-
-    ToolbarAdd.prototype.componentDidUpdate = function () {
-        this.doUpdatePosition();
-
-        // In case of exclusive rendering, focus the first descendant (button)
-        // so the user will be able to start interacting with the buttons immediately.
-        if (this.props.renderExclusive) {
-            this.focus();
-        }
-    };
 
     /**
      * Renders the `ezadd` toolbar. It overrides the AlloyEditor `add` toolbar
@@ -84,52 +66,6 @@ YUI.add('ez-alloyeditor-toolbar-ezadd', function (Y) {
                 )
             )
         );
-    };
-
-    ToolbarAdd.prototype.doUpdatePosition = function () {
-        console.log("_udpatePosition from ezadd");
-        // If component is not mounted, there is nothing to do
-        if (!ReactDOM.findDOMNode(this)) {
-            return;
-        }
-
-        var domNode = ReactDOM.findDOMNode(this);
-        var domElement = new CKEDITOR.dom.element(domNode);
-        var region;
-        if (this.props.selectionData) {
-            region = this.props.selectionData.region;
-        }
-
-        if (region) {
-            var POSITION_LEFT = 1;
-            var POSITION_RIGHT = 2;
-            var domNode = ReactDOM.findDOMNode(this);
-            var domElement = new CKEDITOR.dom.element(domNode);
-            var startRect = region.startRect || region;
-            var nativeEditor = this.props.editor.get('nativeEditor');
-            var clientRect = nativeEditor.editable().getClientRect();
-            var offsetLeft;
-            var position = this.props.config.position || this.props.position;
-
-            if (position === POSITION_LEFT) {
-                offsetLeft = clientRect.left - domNode.offsetWidth - this.props.gutterExclusive.left + 'px';
-            } else {
-                offsetLeft = clientRect.right + this.props.gutterExclusive.left + 'px';
-            }
-
-            var range = this.props.editor._editor.getSelection().getRanges()[0];
-            var offsetTop;
-
-            var startContainer = range.startContainer.$;
-            if (startContainer instanceof Text) {
-                startContainer = startContainer.parentNode;
-            }
-
-            offsetTop = startContainer.offsetTop + 'px'
-
-            domNode.style.left = offsetLeft;
-            domNode.style.top = offsetTop;
-        }
     };
 
     AlloyEditor.Toolbars[ToolbarAdd.key] = ToolbarAdd;

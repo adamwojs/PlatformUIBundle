@@ -6,36 +6,28 @@
 YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
     "use strict";
 
-    var FOCUSED_CLASS = 'is-block-focused';
+    var FOCUSED_CLASS = 'is-block-focused',
+        TOOLBAR_FIXED_CLASS = 'ae-toolbar-styles-fixed';
 
     if (CKEDITOR.plugins.get('ezfocusblock')) {
         return;
     }
 
     function getScrollParent (editor) {
-        var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
-        if (cof && cof.contains(editor)) {
-            return cof.querySelector('.ez-main-content');
+        var container = (new Y.Node(editor)).ancestor('.ez-main-content');
+        if (container.getStyle('overflow') === 'auto') {
+            return container.getDOMNode();
         }
 
         return window;
     }
-    
-    function getScrollY(editor) {
-        var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
-        if (cof && cof.contains(editor)) {
-            return cof.querySelector('.ez-main-content').scrollTop;
-        }
 
-        return window.scrollY;
-    }
+    function isToolbarOutOfViewport (editor, toolbar) {
+        var container = (new Y.Node(editor)).ancestor('.ez-main-content'),
+            scrollY;
 
-    function isToolbarFixed (editor, toolbar) {
-        var scrollY;
-
-        var cof = document.querySelector('.ez-view-universaldiscoverycreateview');
-        if (cof && cof.contains(editor)) {
-            scrollY = cof.querySelector('.ez-main-content').scrollTop;
+        if (container.getStyle('overflow') === 'auto') {
+            scrollY = container.getDOMNode().scrollTop;
         } else {
             scrollY = window.scrollY;
         }
@@ -120,14 +112,10 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
             return ;
         }
 
-        var editorElement = editor.element.$;
-        var scrollY = getScrollY(editorElement);
-        if (scrollY >= (editorElement.offsetTop - toolbar.offsetHeight) &&
-            scrollY <= (editorElement.offsetTop + editorElement.offsetHeight + toolbar.offsetHeight))
-        {
-            toolbar.classList.add('ae-toolbar-styles-fixed');
+        if (isToolbarOutOfViewport(editor.element.$, toolbar)) {
+            toolbar.classList.add(TOOLBAR_FIXED_CLASS);
         } else {
-            toolbar.classList.remove('ae-toolbar-styles-fixed');
+            toolbar.classList.remove(TOOLBAR_FIXED_CLASS);
         }
     };
 
@@ -145,8 +133,7 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
             editor.on('blur', clearFocusedBlock);
             editor.on('getData', clearFocusedBlockFromData);
 
-            var scrollParent = getScrollParent(editor.element.$);
-            scrollParent.addEventListener('scroll', scrollHandler);
+            getScrollParent(editor.element.$).addEventListener('scroll', scrollHandler);
         },
     });
 });
