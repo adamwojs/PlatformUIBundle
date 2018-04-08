@@ -157,7 +157,7 @@ YUI.add('ez-richtext-editview', function (Y) {
             var editor, nativeEd, valid, setEditorFocused, unsetEditorFocused,
                 extraPlugins = [
                     'ezaddcontent', 'widget', 'ezembed', 'ezremoveblock',
-                    'ezfocusblock', 'yui3', 'ezpaste', 'ezmoveelement',
+                    'ezfocusblock', 'ezfloatingtoolbar', 'yui3', 'ezpaste', 'ezmoveelement',
                 ];
 
             if (this.get('isNotTranslatable')) {
@@ -174,8 +174,7 @@ YUI.add('ez-richtext-editview', function (Y) {
                     eZ: {
                         editableRegion: '.' + EDITABLE_CLASS,
                         imageVariations: this._getImageVariations(),
-                    },
-                    //uiNode: this.get('container').ancestor('.ez-main-content')
+                    }
                 }
             );
             nativeEd = editor.get('nativeEditor');

@@ -6,30 +6,10 @@
 YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
     "use strict";
 
-    var FOCUSED_CLASS = 'is-block-focused',
-        TOOLBAR_FIXED_CLASS = 'ae-toolbar-styles-fixed';
+    var FOCUSED_CLASS = 'is-block-focused';
 
     if (CKEDITOR.plugins.get('ezfocusblock')) {
         return;
-    }
-
-    function findScrollParent(editor) {
-        var container = (new Y.Node(editor)).ancestor('.ez-main-content');
-        if (container.getStyle('overflow') === 'auto') {
-            return container.getDOMNode();
-        }
-
-        return window;
-    }
-
-    function findFocusedEditor() {
-        for (var name in CKEDITOR.instances) {
-            if (CKEDITOR.instances[name].focusManager.hasFocus) {
-                return CKEDITOR.instances[name];
-            }
-        }
-
-        return null;
     }
 
     function findFocusedBlock(editor) {
@@ -91,20 +71,6 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
         }
     }
 
-    var scrollHandler = function () {
-        var toolbar = document.querySelector('.ae-toolbar-floating');
-        if (!toolbar) {
-             return ;
-        }
-
-        var editor = findFocusedEditor();
-        if (!editor) {
-            return ;
-        }
-
-        toolbar.classList.toggle(TOOLBAR_FIXED_CLASS, editor.element.getClientRect().top < 0);
-    };
-
     /**
      * CKEditor plugin to add/remove the focused class on the block holding the
      * caret.
@@ -118,8 +84,6 @@ YUI.add('ez-alloyeditor-plugin-focusblock', function (Y) {
             editor.on('selectionChange', updateFocusedBlock);
             editor.on('blur', clearFocusedBlock);
             editor.on('getData', clearFocusedBlockFromData);
-
-            findScrollParent(editor.element.$).addEventListener('scroll', scrollHandler);
         },
     });
 });
