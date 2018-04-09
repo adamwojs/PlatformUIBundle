@@ -6,14 +6,12 @@
 YUI.add('ez-alloyeditor-plugin-floatingtoolbar', function (Y) {
     "use strict";
 
-    console.log('ez-alloyeditor-plugin-floatingtoolbar');
-
     if (CKEDITOR.plugins.get('ezfloatingtoolbar')) {
         return;
     }
 
     var FLOATING_TOOLBAR_SELECTOR = '.ae-toolbar-floating',
-        TOOLBAR_FIXED_CLASS = 'ae-toolbar-styles-fixed';
+        FLOATING_TOOLBAR_PINNED_CLASS = 'ae-toolbar-styles-fixed';
 
     function findScrollParent(editor) {
         var container = (new Y.Node(editor)).ancestor('.ez-main-content');
@@ -45,7 +43,7 @@ YUI.add('ez-alloyeditor-plugin-floatingtoolbar', function (Y) {
             return ;
         }
 
-        toolbar.classList.toggle(TOOLBAR_FIXED_CLASS, editor.element.getClientRect().top < 0);
+        toolbar.classList.toggle(FLOATING_TOOLBAR_PINNED_CLASS, editor.element.getClientRect().top < 0);
     }
 
     /**
@@ -57,7 +55,6 @@ YUI.add('ez-alloyeditor-plugin-floatingtoolbar', function (Y) {
      */
     CKEDITOR.plugins.add('ezfloatingtoolbar', {
         init: function (editor) {
-            console.log("INIT!");
             findScrollParent(editor.element.$).addEventListener('scroll', scrollHandler);
         },
     });
