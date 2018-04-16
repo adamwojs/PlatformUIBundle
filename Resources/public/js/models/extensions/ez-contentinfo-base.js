@@ -44,7 +44,7 @@ YUI.add('ez-contentinfo-base', function (Y) {
                 });
 
                 callback(error, versions);
-            });
+            }, options.acceptHeader);
         },
 
         /**
